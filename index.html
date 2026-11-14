@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827"><title>MILO CASHIER | لوحة الإدارة</title>
+  <link rel="stylesheet" href="styles.css"><script src="config.js"></script>
+</head>
+<body>
+<section id="auth" class="auth-screen">
+  <div class="auth-panel">
+    <div class="logo large">M<span>↗</span></div>
+    <div class="pill">MILO CASHIER • ADMIN</div>
+    <h1 id="authTitle">تسجيل الدخول</h1><p id="authDesc">ادخل اسم المستخدم وكلمة المرور لفتح تقارير الحساب.</p>
+    <form id="authForm">
+      <label>اسم المستخدم<input id="loginUser" autocomplete="username" required placeholder="اسم المستخدم"></label>
+      <label>كلمة المرور<input id="loginPass" type="password" autocomplete="current-password" minlength="8" required placeholder="••••••••"></label>
+      <button class="primary full" type="submit" id="loginButton">دخول إلى لوحة الإدارة</button>
+    </form>
+    <p class="auth-foot" id="authNotice"></p><p class="error" id="authError" role="alert"></p>
+  </div>
+</section>
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">M<span>↗</span></div><div><b>MILO CASHIER</b><small>لوحة إدارة الحساب</small></div></div>
+    <div class="side-caption">القائمة الرئيسية</div>
+    <nav id="nav">
+      <button data-page="overview" class="active">◫ <span>نظرة عامة</span></button>
+      <button data-page="invoices">▤ <span>الفواتير والمبيعات</span></button>
+      <button data-page="products">▦ <span>المنتجات والمخزون</span></button>
+      <button data-page="shifts">◷ <span>الورديات</span></button>
+      <button data-page="expenses">◇ <span>المصروفات</span></button>
+      <button data-page="customers">♙ <span>العملاء</span></button>
+      <button data-page="users">♧ <span>المستخدمون</span></button>
+      <button data-page="devices">▣ <span>الأجهزة</span></button>
+      <button data-page="raw">≡ <span>البيانات الخام</span></button>
+      <button data-page="settings">⚙ <span>الإعدادات والربط</span></button>
+    </nav>
+    <div class="sidebar-bottom"><div class="green-dot"></div><span id="syncIndicator">بانتظار الربط</span></div>
+  </aside>
+  <main>
+    <header class="topbar"><div><button id="mobileMenu" class="mobile-only quiet">☰</button><span class="breadcrumb">لوحة الإدارة / </span><strong id="pageTitle">نظرة عامة</strong></div><div class="top-actions"><span class="desktop-only" id="lastUpdated">—</span><button id="refreshBtn" class="quiet">↻ تحديث</button><button id="logoutBtn" class="quiet">خروج</button></div></header>
+    <div class="content">
+      <div class="heading"><div><div class="eyebrow">إدارة حسابك في مكان واحد</div><h2 id="headingTitle">مرحبًا بك في MILO</h2><p id="headingSubtitle">مؤشرات المبيعات والتقارير من مصادر CSV المرتبطة</p></div><div class="actions"><input type="date" id="fromDate" aria-label="من تاريخ"><input type="date" id="toDate" aria-label="إلى تاريخ"><button id="exportBtn" class="primary">تصدير CSV ↓</button></div></div>
+      <div id="notice" class="notice hidden"></div>
+      <section id="overview" class="page">
+        <div class="metrics">
+          <div class="metric"><div class="metric-top">إجمالي المبيعات <span>↗</span></div><div class="metric-value" id="salesSum">—</div><small>مجموع الفواتير غير الملغاة</small></div>
+          <div class="metric"><div class="metric-top">عدد الفواتير <span>▤</span></div><div class="metric-value" id="invoiceCount">—</div><small>ضمن الفترة المحددة</small></div>
+          <div class="metric"><div class="metric-top">متوسط الفاتورة <span>◈</span></div><div class="metric-value" id="averageTicket">—</div><small>إجمالي المبيعات ÷ الفواتير</small></div>
+          <div class="metric"><div class="metric-top">صافي بعد المصروفات <span>◇</span></div><div class="metric-value" id="netSum">—</div><small>المبيعات ناقص المصروفات المسجلة</small></div>
+        </div>
+        <div class="dashgrid"><div class="panel wide"><div class="panel-header"><div><h3>حركة المبيعات</h3><p>حسب التاريخ المسجل في CSV</p></div></div><canvas id="salesChart" height="260"></canvas></div><div class="panel"><div class="panel-header"><h3>ملخص الحساب</h3></div><div class="stats" id="summaryStats"></div></div></div>
+        <div class="panel"><div class="panel-header"><h3>آخر الفواتير</h3><button class="text-btn" data-goto="invoices">عرض الكل ←</button></div><div id="recentTable"></div></div>
+      </section>
+      <section id="datasetPage" class="page hidden"><div class="panel"><div class="panel-header"><div><h3 id="datasetTitle">التفاصيل</h3><p id="datasetSub"></p></div><input type="search" id="tableSearch" placeholder="بحث في النتائج..." aria-label="بحث في النتائج"></div><div id="dataTable"></div><div class="table-footer" id="tableFoot"></div></div></section>
+      <section id="settings" class="page hidden"><div class="panel"><h3>إعدادات مصدر البيانات</h3><p class="muted">ضع رابط CSV منشورًا لكل ورقة تريد إظهارها. رابط واحد يعرض ورقة واحدة فقط، ولا يمنح الموقع الوصول إلى بقية أوراق المصنف تلقائيًا.</p><div id="feedInputs" class="feed-grid"></div><div class="settings-actions"><button id="saveFeeds" class="primary">حفظ الروابط وإعادة التحميل</button><button id="resetFeeds" class="quiet">استعادة الروابط الأصلية</button></div><div class="notice-soft"><strong>تنبيه الأمان:</strong> تسجيل الدخول هنا محلي على هذا المتصفح، وليس تسجيل الدخول الحقيقي لنظام الكاشير. وCSV المنشور علنًا غير مناسب للبيانات السرية أو صلاحيات الحسابات. للحماية الفعلية وربط بيانات كل حساب يلزم خادم أو واجهة API تتحقق من المستخدم وتحدّد صلاحياته.</div></div></section>
+    </div>
+  </main>
+</div>
+<script src="app.js"></script>
+</body></html>
